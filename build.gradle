@@ -1,8 +1,18 @@
-plugins {
-    id 'net.minecraftforge.gradle' version '5.1.+'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+buildscript {
+    repositories {
+        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://maven.parchmentmc.org' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath 'org.parchmentmc:librarian:1.+'
+    }
 }
 
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 group = 'me.mangorage'
 version = '1.0'
@@ -13,7 +23,6 @@ java {
 }
 
 minecraft {
-
     mappings channel: 'parchment', version: "${parchment_version}-${minecraft_version}"
 
 
@@ -108,6 +117,8 @@ dependencies {
 
 // Example for how to get properties into the manifest for reading at runtime.
 jar {
+    finalizedBy("reobfJar")
+
     manifest {
         attributes([
                 "Specification-Title"     : "multiblock",
@@ -121,7 +132,7 @@ jar {
     }
 }
 
-jar.finalizedBy('reobfJar')
+
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
